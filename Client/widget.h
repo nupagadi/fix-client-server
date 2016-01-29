@@ -21,8 +21,8 @@ public:
     Widget(const Widget&) = delete;
     Widget& operator =(const Widget&) = delete;
 
-    void SetBuyPrice(double buy_price);
-    void SetSellPrice(double sell_price);
+    void SetBuyButtonText(double buy_price/* = 0*/);
+    void SetSellButtonText(double sell_price/* = 0*/);
 
 private:
     bool SetLot();

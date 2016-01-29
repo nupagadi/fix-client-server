@@ -105,9 +105,21 @@ Widget::~Widget()
     delete mClient;
 }
 
-void Widget::SetBuyPrice(double buy_price) { mBuyButton->setText("Buy at " + QString::number(buy_price)); }
+void Widget::SetBuyButtonText(double buy_price = 0)
+{
+    QString buttonText("Buy");
+    if(GetOrderType() == '1' && !qFuzzyCompare(buy_price, 0))
+        buttonText += " at " + QString::number(buy_price);
+    mBuyButton->setText(buttonText);
+}
 
-void Widget::SetSellPrice(double sell_price) { mSellButton->setText("Sell at " + QString::number(sell_price)); }
+void Widget::SetSellButtonText(double sell_price = 0)
+{
+    QString buttonText("Sell");
+    if(GetOrderType() == '1' && !qFuzzyCompare(sell_price, 0))
+        buttonText += " at " + QString::number(sell_price);
+    mSellButton->setText(buttonText);
+}
 
 void Widget::BuyButtonClicked()
 {
@@ -146,8 +158,8 @@ void Widget::RefreshButtonClicked()
     std::function<void(double, double)> task(
         [this](double buy_price, double sell_price)
         {
-            this->SetBuyPrice(buy_price);
-            this->SetSellPrice(sell_price);
+            this->SetBuyButtonText(buy_price);
+            this->SetSellButtonText(sell_price);
         }
     );
 
