@@ -13,7 +13,7 @@ void CreateMessage(char type, const std::string &cur, double lot);
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent), mLot(DEFAULT_LOT), mCurrency(DEFAULT_CURRENCY),
-    mState(), mPrice(), mBuyPriceLabel(), mSellPriceLabel()
+    mState(), mPrice()/*, mBuyPriceLabel(), mSellPriceLabel()*/
 {
     // form
     QLabel* plotLabel = new QLabel("Lot:");
@@ -50,25 +50,25 @@ Widget::Widget(QWidget *parent)
 
 
     // buttons
-    mBuyPriceLabel = new QLabel("0");
-    mSellPriceLabel = new QLabel("0");
-    QLabel* patLabel1 = new QLabel("at");
-    QLabel* patLabel2 = new QLabel("at");
+//    mBuyPriceLabel = new QLabel("0");
+//    mSellPriceLabel = new QLabel("0");
+//    QLabel* patLabel1 = new QLabel("at");
+//    QLabel* patLabel2 = new QLabel("at");
 
-    QPushButton* pbuyBut = new QPushButton("Buy");
-    QPushButton* psellBut = new QPushButton("Sell");
+    mBuyButton = new QPushButton("Buy");
+    mSellButton = new QPushButton("Sell");
     QPushButton* prefresh = new QPushButton("Refresh");
 
     QHBoxLayout* pbuttonLayout = new QHBoxLayout;
-    pbuttonLayout->addWidget(pbuyBut);
+    pbuttonLayout->addWidget(mBuyButton);
     pbuttonLayout->addSpacing(10);
-    pbuttonLayout->addWidget(psellBut);
+    pbuttonLayout->addWidget(mSellButton);
 
-    QHBoxLayout* ppricesLayout = new QHBoxLayout;
-    ppricesLayout->addWidget(patLabel1, 1);
-    ppricesLayout->addWidget(mBuyPriceLabel, 3);
-    ppricesLayout->addWidget(patLabel2, 1);
-    ppricesLayout->addWidget(mSellPriceLabel, 3);
+//    QHBoxLayout* ppricesLayout = new QHBoxLayout;
+//    ppricesLayout->addWidget(patLabel1, 1);
+//    ppricesLayout->addWidget(mBuyPriceLabel, 3);
+//    ppricesLayout->addWidget(patLabel2, 1);
+//    ppricesLayout->addWidget(mSellPriceLabel, 3);
 
 
     // radio buttons
@@ -109,8 +109,8 @@ Widget::Widget(QWidget *parent)
 
 
     // connections
-    connect(pbuyBut, SIGNAL(clicked()), SLOT(BuyButtonClicked()));
-    connect(psellBut, SIGNAL(clicked()), SLOT(SellButtonClicked()));
+    connect(mBuyButton, SIGNAL(clicked()), SLOT(BuyButtonClicked()));
+    connect(mSellButton, SIGNAL(clicked()), SLOT(SellButtonClicked()));
     connect(prefresh, SIGNAL(clicked()), SLOT(RefreshButtonClicked()));
 //    connect(mLotEdit, SIGNAL(editingFinished()), SLOT(SetLot()));
 
@@ -128,9 +128,9 @@ Widget::~Widget()
     delete mClient;
 }
 
-void Widget::SetBuyPrice(double buy_price) { mBuyPriceLabel->setNum(buy_price); }
+void Widget::SetBuyPrice(double buy_price) { mBuyButton->setText("Buy at " + QString::number(buy_price)); }
 
-void Widget::SetSellPrice(double sell_price) { mSellPriceLabel->setNum(sell_price); }
+void Widget::SetSellPrice(double sell_price) { mSellButton->setText("Sell at " + QString::number(sell_price)); }
 
 void Widget::BuyButtonClicked()
 {
