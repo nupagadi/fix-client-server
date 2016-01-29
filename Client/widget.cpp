@@ -15,18 +15,13 @@ Widget::Widget(QWidget *parent)
     : QWidget(parent), mLot(DEFAULT_LOT), mCurrency(DEFAULT_CURRENCY),
     mState(), mPrice(), mBuyPriceLabel(), mSellPriceLabel()
 {
-    // input
+    // form
     QLabel* plotLabel = new QLabel("Lot:");
     QLabel* pcurrLabel = new QLabel("Currency:");
     QLabel* ppriceLabel = new QLabel("Price:");
     mLotEdit = new QLineEdit;
     QLineEdit* pcurrEdit = new QLineEdit;
     mPriceEdit = new QLineEdit;
-
-    mBuyPriceLabel = new QLabel("0");
-    mSellPriceLabel = new QLabel("0");
-    QLabel* patLabel1 = new QLabel("at");
-    QLabel* patLabel2 = new QLabel("at");
 
     mLotEdit->setMaximumWidth(40);
     pcurrEdit->setMaximumWidth(80);
@@ -45,7 +40,7 @@ Widget::Widget(QWidget *parent)
     pcurrEdit->setText(mCurrency);
 
     QFormLayout* pfLayout = new QFormLayout;
-    pfLayout->setFieldGrowthPolicy(QFormLayout::FieldsStayAtSizeHint);
+//    pfLayout->setFieldGrowthPolicy(QFormLayout::FieldsStayAtSizeHint);
     pfLayout->setHorizontalSpacing(20);
     pfLayout->setLabelAlignment(Qt::AlignRight);
 
@@ -53,7 +48,13 @@ Widget::Widget(QWidget *parent)
     pfLayout->addRow(plotLabel, mLotEdit);
     pfLayout->addRow(ppriceLabel, mPriceEdit);
 
+
     // buttons
+    mBuyPriceLabel = new QLabel("0");
+    mSellPriceLabel = new QLabel("0");
+    QLabel* patLabel1 = new QLabel("at");
+    QLabel* patLabel2 = new QLabel("at");
+
     QPushButton* pbuyBut = new QPushButton("Buy");
     QPushButton* psellBut = new QPushButton("Sell");
     QPushButton* prefresh = new QPushButton("Refresh");
@@ -69,15 +70,43 @@ Widget::Widget(QWidget *parent)
     ppricesLayout->addWidget(patLabel2, 1);
     ppricesLayout->addWidget(mSellPriceLabel, 3);
 
-    // main layout
-    QVBoxLayout* pmainLayout = new QVBoxLayout;
-    pmainLayout->addLayout(pfLayout);
-    pmainLayout->addSpacing(20);
-    pmainLayout->addLayout(pbuttonLayout);
-    pmainLayout->addLayout(ppricesLayout);
-    pmainLayout->addWidget(prefresh);
 
-    setLayout(pmainLayout);
+    // radio buttons
+//    QGroupBox* pradioGroup = new QGroupBox;
+    mRadMarket = new QRadioButton("Market");
+    mRadLimit = new QRadioButton("Limit");
+    mRadStop = new QRadioButton("Stop");
+    mRadMarket->setChecked(true);
+    QVBoxLayout* pradioLayout = new QVBoxLayout;
+    pradioLayout->addWidget(mRadMarket);
+    pradioLayout->addWidget(mRadLimit);
+    pradioLayout->addWidget(mRadStop);
+//    pradioGroup->setLayout(pradioLayout);
+
+    QGridLayout* pmainGrid = new QGridLayout;
+    pmainGrid->addLayout(pfLayout, 0, 0);
+    pmainGrid->addLayout(pradioLayout, 0, 1);
+    pmainGrid->addLayout(pbuttonLayout, 1, 0, 1, 2);
+    pmainGrid->addWidget(prefresh, 2, 0, 1, 2);
+
+    pmainGrid->setHorizontalSpacing(30);
+    pmainGrid->setVerticalSpacing(15);
+    pmainGrid->setMargin(15);
+
+//    pmainGrid->setAlignment(pradioGroup, Qt::AlignTop);
+//    pfLayout->setAlignment()
+
+
+    // main layout
+//    QVBoxLayout* pmainLayout = new QVBoxLayout;
+//    pmainLayout->addLayout(pfLayout);
+//    pmainLayout->addSpacing(20);
+//    pmainLayout->addLayout(pbuttonLayout);
+//    pmainLayout->addLayout(ppricesLayout);
+//    pmainLayout->addWidget(prefresh);
+
+    setLayout(pmainGrid);
+
 
     // connections
     connect(pbuyBut, SIGNAL(clicked()), SLOT(BuyButtonClicked()));
@@ -115,7 +144,7 @@ void Widget::BuyButtonClicked()
         mPriceEdit->setFocus();
         return;
     }
-    mClient->Send('2', '1', mCurrency.toStdString(), mLot, mPrice);
+    mClient->Send(GetOrderType(), '1', mCurrency.toStdString(), mLot, mPrice);
 //    CreateMessage('1', mCurrency.toStdString(), mLot);
 }
 
@@ -131,7 +160,7 @@ void Widget::SellButtonClicked()
         mPriceEdit->setFocus();
         return;
     }
-    mClient->Send('2', '2', mCurrency.toStdString(), mLot, mPrice);
+    mClient->Send(GetOrderType(), '2', mCurrency.toStdString(), mLot, mPrice);
 //    CreateMessage('2', mCurrency.toStdString(), mLot);
 }
 
@@ -168,6 +197,17 @@ bool Widget::SetPrice()
     mPrice = mPriceEdit->text().replace(',', '.').toDouble(&ok);
 
     return ok;
+}
+
+char Widget::GetOrderType()
+{
+    if(mRadMarket->isChecked())
+        return '1';
+    else if(mRadLimit->isChecked())
+        return '2';
+    else if(mRadStop->isChecked())
+        return '3';
+    else throw std::logic_error("Wrong radio button state");
 }
 
 void CreateMessage(char type, const std::string& cur, double lot)

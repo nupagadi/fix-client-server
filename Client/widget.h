@@ -8,6 +8,7 @@ constexpr char SETTINGS_FILE_NAME[] = "res/settings";
 class QLineEdit;
 class QLabel;
 class Client;
+class QRadioButton;
 
 class Widget : public QWidget
 {
@@ -26,6 +27,7 @@ public:
 private:
     bool SetLot();
     bool SetPrice();
+    char GetOrderType();
 
 private slots:
     void BuyButtonClicked();
@@ -42,6 +44,10 @@ private:
     QLineEdit* mPriceEdit;
     QLabel *mBuyPriceLabel;
     QLabel *mSellPriceLabel;
+
+    QRadioButton* mRadMarket;
+    QRadioButton* mRadLimit;
+    QRadioButton* mRadStop;
 
     Client* mClient;
 };
