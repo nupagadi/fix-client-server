@@ -13,7 +13,7 @@ void CreateMessage(char type, const std::string &cur, double lot);
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent), mLot(DEFAULT_LOT), mCurrency(DEFAULT_CURRENCY),
-    mState(), mPrice()/*, mBuyPriceLabel(), mSellPriceLabel()*/
+    mState(), mPrice()
 {
     // form
     QLabel* plotLabel = new QLabel("Lot:");
@@ -50,11 +50,6 @@ Widget::Widget(QWidget *parent)
 
 
     // buttons
-//    mBuyPriceLabel = new QLabel("0");
-//    mSellPriceLabel = new QLabel("0");
-//    QLabel* patLabel1 = new QLabel("at");
-//    QLabel* patLabel2 = new QLabel("at");
-
     mBuyButton = new QPushButton("Buy");
     mSellButton = new QPushButton("Sell");
     QPushButton* prefresh = new QPushButton("Refresh");
@@ -63,12 +58,6 @@ Widget::Widget(QWidget *parent)
     pbuttonLayout->addWidget(mBuyButton);
     pbuttonLayout->addSpacing(10);
     pbuttonLayout->addWidget(mSellButton);
-
-//    QHBoxLayout* ppricesLayout = new QHBoxLayout;
-//    ppricesLayout->addWidget(patLabel1, 1);
-//    ppricesLayout->addWidget(mBuyPriceLabel, 3);
-//    ppricesLayout->addWidget(patLabel2, 1);
-//    ppricesLayout->addWidget(mSellPriceLabel, 3);
 
 
     // radio buttons
@@ -92,18 +81,6 @@ Widget::Widget(QWidget *parent)
     pmainGrid->setHorizontalSpacing(30);
     pmainGrid->setVerticalSpacing(15);
     pmainGrid->setMargin(15);
-
-//    pmainGrid->setAlignment(pradioGroup, Qt::AlignTop);
-//    pfLayout->setAlignment()
-
-
-    // main layout
-//    QVBoxLayout* pmainLayout = new QVBoxLayout;
-//    pmainLayout->addLayout(pfLayout);
-//    pmainLayout->addSpacing(20);
-//    pmainLayout->addLayout(pbuttonLayout);
-//    pmainLayout->addLayout(ppricesLayout);
-//    pmainLayout->addWidget(prefresh);
 
     setLayout(pmainGrid);
 

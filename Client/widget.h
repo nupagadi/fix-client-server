@@ -6,7 +6,6 @@
 constexpr char SETTINGS_FILE_NAME[] = "res/settings";
 
 class QLineEdit;
-class QLabel;
 class Client;
 class QRadioButton;
 class QPushButton;
@@ -41,14 +40,8 @@ private:
     bool mState;
     double mPrice;
 
-
     QLineEdit* mLotEdit;
     QLineEdit* mPriceEdit;
-
-//    QLabel *mBuyPriceLabel;
-//    QLabel *mSellPriceLabel;
-
-
 
     QPushButton* mBuyButton;
     QPushButton* mSellButton;
