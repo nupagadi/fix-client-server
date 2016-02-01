@@ -29,9 +29,11 @@
 bool Market::insert( const Order& order )
 {
   if ( order.getSide() == Order::buy )
-    m_bidOrders.insert( BidOrders::value_type( order.getPrice(), order ) );
+      m_bidOrders.insert( BidOrders::value_type(order, order) );
+//  m_bidOrders.insert( BidOrders::value_type( order.getPrice(), order ) );
   else
-    m_askOrders.insert( AskOrders::value_type( order.getPrice(), order ) );
+      m_askOrders.insert( AskOrders::value_type(order, order) );
+//    m_askOrders.insert( AskOrders::value_type( order.getPrice(), order ) );
   return true;
 }
 
@@ -67,15 +69,15 @@ bool Market::match( std::queue < Order > & orders )
     if ( !m_bidOrders.size() || !m_askOrders.size() )
       return orders.size() != 0;
 
-    BidOrders::iterator iBid = m_bidOrders.begin();
-    AskOrders::iterator iAsk = m_askOrders.begin();
+    auto iBid = m_bidOrders.begin();
+    auto iAsk = m_askOrders.begin();
 
     if ( iBid->second.getPrice() >= iAsk->second.getPrice() )
     {
-      Order & bid = iBid->second;
+      Order& bid = iBid->second;
       Order& ask = iAsk->second;
 
-      match( bid, ask );
+      match(bid, ask);
       orders.push( bid );
       orders.push( ask );
 

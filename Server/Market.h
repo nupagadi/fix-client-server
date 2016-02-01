@@ -38,8 +38,8 @@ public:
   void display() const;
 
 private:
-  typedef std::multimap < double, Order, std::greater < double > > BidOrders;
-  typedef std::multimap < double, Order, std::less < double > > AskOrders;
+  typedef std::multimap < Order::OrderKey, Order, decltype(Order::IsGreater)*/*, std::greater < double > */> BidOrders;
+  typedef std::multimap < Order::OrderKey, Order, decltype(Order::IsLess)*/*, std::less < double > */> AskOrders;
 
   void match( Order& bid, Order& ask );
 
