@@ -13,7 +13,7 @@ StartTime=00:30:00
 EndTime=23:30:00
 HeartBtInt=600
 SocketConnectPort=9823
-SocketConnectHost=192.168.0.68
+SocketConnectHost=127.0.0.1
 DataDictionary=res/FIX42.xml
 FileStorePath=filestore
 

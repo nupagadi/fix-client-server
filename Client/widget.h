@@ -24,6 +24,9 @@ public:
     void SetBuyButtonText(double buy_price/* = 0*/);
     void SetSellButtonText(double sell_price/* = 0*/);
 
+    void SetBid(double bid);
+    void SetOffer(double offer);
+
 private:
     bool SetLot();
     bool SetPrice();
@@ -33,6 +36,7 @@ private slots:
     void BuyButtonClicked();
     void SellButtonClicked();    
     void RefreshButtonClicked();
+    void RadioButtonClicked();
 
 private:
     double mLot;
@@ -45,6 +49,8 @@ private:
 
     QPushButton* mBuyButton;
     QPushButton* mSellButton;
+    double mBid;
+    double mOffer;
 
     QRadioButton* mRadMarket;
     QRadioButton* mRadLimit;

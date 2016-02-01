@@ -13,7 +13,7 @@ void CreateMessage(char type, const std::string &cur, double lot);
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent), mLot(DEFAULT_LOT), mCurrency(DEFAULT_CURRENCY),
-    mState(), mPrice()
+    mState(), mPrice(), mBid(), mOffer()
 {
     // form
     QLabel* plotLabel = new QLabel("Lot:");
@@ -60,8 +60,7 @@ Widget::Widget(QWidget *parent)
     pbuttonLayout->addWidget(mSellButton);
 
 
-    // radio buttons
-//    QGroupBox* pradioGroup = new QGroupBox;
+    // radio buttons    
     mRadMarket = new QRadioButton("Market");
     mRadLimit = new QRadioButton("Limit");
     mRadStop = new QRadioButton("Stop");
@@ -70,6 +69,9 @@ Widget::Widget(QWidget *parent)
     pradioLayout->addWidget(mRadMarket);
     pradioLayout->addWidget(mRadLimit);
     pradioLayout->addWidget(mRadStop);
+
+//    QGroupBox* pradioGroup = new QGroupBox;
+//    pradioGroup->setFlat(true);
 //    pradioGroup->setLayout(pradioLayout);
 
     QGridLayout* pmainGrid = new QGridLayout;
@@ -91,6 +93,9 @@ Widget::Widget(QWidget *parent)
     connect(prefresh, SIGNAL(clicked()), SLOT(RefreshButtonClicked()));
 //    connect(mLotEdit, SIGNAL(editingFinished()), SLOT(SetLot()));
 
+    connect(mRadMarket, SIGNAL(clicked()), SLOT(RadioButtonClicked()));
+    connect(mRadLimit, SIGNAL(clicked()), SLOT(RadioButtonClicked()));
+    connect(mRadStop, SIGNAL(clicked()), SLOT(RadioButtonClicked()));
 
 
     mClient = new Client(SETTINGS_FILE_NAME);
@@ -108,7 +113,8 @@ Widget::~Widget()
 void Widget::SetBuyButtonText(double buy_price = 0)
 {
     QString buttonText("Buy");
-    if(GetOrderType() == '1' && !qFuzzyCompare(buy_price, 0))
+    // qFuzzyCompare() has some zero compare issues
+    if(GetOrderType() == '1' && !qFuzzyCompare(buy_price+1, 1))
         buttonText += " at " + QString::number(buy_price);
     mBuyButton->setText(buttonText);
 }
@@ -116,7 +122,7 @@ void Widget::SetBuyButtonText(double buy_price = 0)
 void Widget::SetSellButtonText(double sell_price = 0)
 {
     QString buttonText("Sell");
-    if(GetOrderType() == '1' && !qFuzzyCompare(sell_price, 0))
+    if(GetOrderType() == '1' && !qFuzzyCompare(sell_price+1, 1))
         buttonText += " at " + QString::number(sell_price);
     mSellButton->setText(buttonText);
 }
@@ -156,14 +162,40 @@ void Widget::SellButtonClicked()
 void Widget::RefreshButtonClicked()
 {
     std::function<void(double, double)> task(
-        [this](double buy_price, double sell_price)
+        [this](double bid, double offer)
         {
-            this->SetBuyButtonText(buy_price);
-            this->SetSellButtonText(sell_price);
+            this->SetBid(bid);
+            this->SetOffer(offer);
         }
     );
 
     mClient->AskForMarketData(std::move(task));
+
+
+    RadioButtonClicked();
+}
+
+void Widget::RadioButtonClicked()
+{
+    QString buyButtonText("Buy"), sellButtonText("Sell");
+    // qFuzzyCompare() has some zero compare issues
+    if(GetOrderType() == '1' && !qFuzzyCompare(mBid+1, 1) && !qFuzzyCompare(mOffer+1, 1))
+    {
+        buyButtonText += " at " + QString::number(mBid);
+        sellButtonText += " at " + QString::number(mOffer);
+    }
+    mBuyButton->setText(buyButtonText);
+    mSellButton->setText(sellButtonText);
+}
+
+void Widget::SetOffer(double offer)
+{
+    mOffer = offer;
+}
+
+void Widget::SetBid(double bid)
+{
+    mBid = bid;
 }
 
 bool Widget::SetLot()
