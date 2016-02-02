@@ -9,6 +9,7 @@ class QLineEdit;
 class Client;
 class QRadioButton;
 class QPushButton;
+class QLabel;
 
 class Widget : public QWidget
 {
@@ -44,6 +45,7 @@ private:
     bool mState;
     double mPrice;
 
+    QLabel* mPriceLabel;
     QLineEdit* mLotEdit;
     QLineEdit* mPriceEdit;
 

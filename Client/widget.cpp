@@ -18,7 +18,7 @@ Widget::Widget(QWidget *parent)
     // form
     QLabel* plotLabel = new QLabel("Lot:");
     QLabel* pcurrLabel = new QLabel("Currency:");
-    QLabel* ppriceLabel = new QLabel("Price:");
+    mPriceLabel = new QLabel("Price:");
     mLotEdit = new QLineEdit;
     QLineEdit* pcurrEdit = new QLineEdit;
     mPriceEdit = new QLineEdit;
@@ -46,7 +46,7 @@ Widget::Widget(QWidget *parent)
 
     pfLayout->addRow(pcurrLabel, pcurrEdit);
     pfLayout->addRow(plotLabel, mLotEdit);
-    pfLayout->addRow(ppriceLabel, mPriceEdit);
+    pfLayout->addRow(mPriceLabel, mPriceEdit);
 
 
     // buttons
@@ -84,7 +84,8 @@ Widget::Widget(QWidget *parent)
     pmainGrid->setVerticalSpacing(15);
     pmainGrid->setMargin(15);
 
-    setLayout(pmainGrid);
+    setLayout(pmainGrid);    
+    setFixedSize(sizeHint());
 
 
     // connections
@@ -178,14 +179,22 @@ void Widget::RefreshButtonClicked()
 void Widget::RadioButtonClicked()
 {
     QString buyButtonText("Buy"), sellButtonText("Sell");
+    bool showPrice = true;
     // qFuzzyCompare() has some zero compare issues
-    if(GetOrderType() == '1' && !qFuzzyCompare(mBid+1, 1) && !qFuzzyCompare(mOffer+1, 1))
+    if(GetOrderType() == '1')
     {
-        buyButtonText += " at " + QString::number(mBid);
-        sellButtonText += " at " + QString::number(mOffer);
+        if( !qFuzzyCompare(mBid+1, 1) && !qFuzzyCompare(mOffer+1, 1) )
+        {
+            buyButtonText += " at " + QString::number(mBid);
+            sellButtonText += " at " + QString::number(mOffer);
+        }
+        showPrice = false;
     }
     mBuyButton->setText(buyButtonText);
     mSellButton->setText(sellButtonText);
+
+    mPriceLabel->setVisible(showPrice);
+    mPriceEdit->setVisible(showPrice);
 }
 
 void Widget::SetOffer(double offer)
