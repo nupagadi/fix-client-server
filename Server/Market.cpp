@@ -25,6 +25,7 @@
 
 #include "Market.h"
 #include <iostream>
+#include <algorithm>
 
 bool Market::insert( const Order& order )
 {
@@ -60,6 +61,19 @@ void Market::erase( const Order& order )
   }
 }
 
+void Market::GetTops(BidOrders::iterator& iBid, AskOrders::iterator& iAsk)
+{
+    iBid = m_bidOrders.begin();
+    iAsk = m_askOrders.begin();
+    if(iBid->second.getType() == Order::market && iAsk->second.getType() == Order::market)
+        iAsk = std::find_if(iAsk, m_askOrders.end(),
+            [](AskOrders::value_type& el)
+            {
+                return el.second.getType() != Order::market;
+            }
+        );
+}
+
 bool Market::match( std::queue < Order > & orders )
 {
   while ( true )
@@ -67,13 +81,14 @@ bool Market::match( std::queue < Order > & orders )
     if ( !m_bidOrders.size() || !m_askOrders.size() )
       return orders.size() != 0;
 
-    auto iBid = m_bidOrders.begin();
-    auto iAsk = m_askOrders.begin();
+    BidOrders::iterator iBid;    AskOrders::iterator iAsk;
+    GetTops(iBid, iAsk);
+    Order& bid = iBid->second;
+    Order& ask = iAsk->second;
 
-    if ( iBid->second.getPrice() >= iAsk->second.getPrice() )
+    if ( bid.getType() == Order::market || ask.getType() == Order::market
+         || bid.getPrice() >= ask.getPrice() )
     {
-      Order& bid = iBid->second;
-      Order& ask = iAsk->second;
 
       match(bid, ask);
       orders.push( bid );
@@ -112,7 +127,7 @@ Order& Market::find( Order::Side side, std::string id/* = ""*/ )
 
 void Market::match( Order& bid, Order& ask )
 {
-  double price = ask.getPrice();
+  double price = ask.getType() != Order::market ? ask.getPrice() : bid.getPrice();
   long quantity = 0;
 
   if ( bid.getOpenQuantity() > ask.getOpenQuantity() )

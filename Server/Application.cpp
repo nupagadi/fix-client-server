@@ -48,7 +48,7 @@ void Application::onMessage( const FIX42::NewOrderSingle& message, const FIX::Se
     FIX::Symbol symbol;
     FIX::Side side;
     FIX::OrdType ordType;
-    FIX::Price price;
+    FIX::Price price(0);
     FIX::OrderQty orderQty;
     FIX::TimeInForce timeInForce( FIX::TimeInForce_DAY );
 
@@ -58,10 +58,12 @@ void Application::onMessage( const FIX42::NewOrderSingle& message, const FIX::Se
     message.get( symbol );
     message.get( side );
     message.get( ordType );
-    if ( ordType == FIX::OrdType_LIMIT )
-        message.get( price );
     message.get( orderQty );
     message.getFieldIfSet( timeInForce );
+
+    if ( ordType == FIX::OrdType_LIMIT )
+        message.get( price );
+    else if (ordType == FIX::OrdType_MARKET) {}
 
     try
     {
@@ -271,6 +273,7 @@ Order::Type Application::convert( const FIX::OrdType& ordType )
     switch ( ordType )
     {
     case FIX::OrdType_LIMIT: return Order::limit;
+    case FIX::OrdType_MARKET: return Order::market;
     default: throw std::logic_error( "Unsupported Order Type, use limit" );
     }
 }
