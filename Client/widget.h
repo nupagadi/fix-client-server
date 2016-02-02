@@ -6,8 +6,10 @@
 constexpr char SETTINGS_FILE_NAME[] = "res/settings";
 
 class QLineEdit;
-class QLabel;
 class Client;
+class QRadioButton;
+class QPushButton;
+class QLabel;
 
 class Widget : public QWidget
 {
@@ -20,17 +22,22 @@ public:
     Widget(const Widget&) = delete;
     Widget& operator =(const Widget&) = delete;
 
-    void SetBuyPrice(double buy_price);
-    void SetSellPrice(double sell_price);
+    void SetBuyButtonText(double buy_price/* = 0*/);
+    void SetSellButtonText(double sell_price/* = 0*/);
+
+    void SetBid(double bid);
+    void SetOffer(double offer);
 
 private:
     bool SetLot();
     bool SetPrice();
+    char GetOrderType();
 
 private slots:
     void BuyButtonClicked();
     void SellButtonClicked();    
     void RefreshButtonClicked();
+    void RadioButtonClicked();
 
 private:
     double mLot;
@@ -38,10 +45,18 @@ private:
     bool mState;
     double mPrice;
 
+    QLabel* mPriceLabel;
     QLineEdit* mLotEdit;
     QLineEdit* mPriceEdit;
-    QLabel *mBuyPriceLabel;
-    QLabel *mSellPriceLabel;
+
+    QPushButton* mBuyButton;
+    QPushButton* mSellButton;
+    double mBid;
+    double mOffer;
+
+    QRadioButton* mRadMarket;
+    QRadioButton* mRadLimit;
+    QRadioButton* mRadStop;
 
     Client* mClient;
 };

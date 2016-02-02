@@ -33,7 +33,7 @@
 
 constexpr char SETTINGS_FILE_NAME[] = "res/settings";
 
-int main( int argc, char** argv )
+int main( /*int argc, char** argv*/ )
 {
 //  if ( argc != 2 )
 //  {
