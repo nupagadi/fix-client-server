@@ -30,10 +30,8 @@ bool Market::insert( const Order& order )
 {
   if ( order.getSide() == Order::buy )
       m_bidOrders.insert( BidOrders::value_type(order, order) );
-//  m_bidOrders.insert( BidOrders::value_type( order.getPrice(), order ) );
   else
       m_askOrders.insert( AskOrders::value_type(order, order) );
-//    m_askOrders.insert( AskOrders::value_type( order.getPrice(), order ) );
   return true;
 }
 

@@ -27,12 +27,13 @@
 #include <ostream>
 
 
+struct OrderKey; // definition below
+
 class Order
 {
     friend std::ostream& operator<<( std::ostream&, const Order& );
 
 public:
-    struct OrderKey;
     enum Side { buy, sell };
     enum Type { market, limit };
 
@@ -51,7 +52,7 @@ public:
     }
 
     // definition below
-//    operator OrderKey() const;
+    operator OrderKey() const;
 
     const std::string& getClientID() const { return m_clientId; }
     const std::string& getSymbol() const { return m_symbol; }
@@ -102,33 +103,29 @@ private:
     double m_avgExecutedPrice;
     double m_lastExecutedPrice;
     long m_lastExecutedQuantity;
-
-
-public:
-
-    struct OrderKey
-    {
-        Order::Type type;
-        double price;
-    };
-
-    static bool IsLess(const OrderKey &left, const OrderKey &right)
-    {
-        return right.type != Order::market &&
-                ( left.type == Order::market || left.price < right.price );
-    }
-
-    static bool IsGreater(const OrderKey &left, const OrderKey &right)
-    {
-        return !IsLess(right, left);
-    }
-
-    operator OrderKey() const
-    {
-        return OrderKey{ m_type, m_price};
-    }
-
 };
+
+struct OrderKey
+{
+    Order::Type type;
+    double price;
+};
+
+inline bool IsLess(const OrderKey &left, const OrderKey &right)
+{
+    return right.type != Order::market &&
+            ( left.type == Order::market || left.price < right.price );
+}
+
+inline bool IsGreater(const OrderKey &left, const OrderKey &right)
+{
+    return IsLess(right, left);
+}
+
+inline Order::operator OrderKey() const
+{
+    return OrderKey{ m_type, m_price};
+}
 
 inline std::ostream& operator<<( std::ostream& ostream, const Order& order )
 {

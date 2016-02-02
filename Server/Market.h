@@ -31,6 +31,8 @@
 class Market
 {
 public:
+    Market() : m_bidOrders(IsGreater), m_askOrders(IsLess) {}
+
   bool insert( const Order& order );
   void erase( const Order& order );
   Order& find( Order::Side side, std::string id = "" );
@@ -38,8 +40,8 @@ public:
   void display() const;
 
 private:
-  typedef std::multimap < Order::OrderKey, Order, decltype(Order::IsGreater)*/*, std::greater < double > */> BidOrders;
-  typedef std::multimap < Order::OrderKey, Order, decltype(Order::IsLess)*/*, std::less < double > */> AskOrders;
+  typedef std::multimap < OrderKey, Order, decltype(IsGreater)*> BidOrders;
+  typedef std::multimap < OrderKey, Order, decltype(IsLess)*> AskOrders;
 
   void match( Order& bid, Order& ask );
 
