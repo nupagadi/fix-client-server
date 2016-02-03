@@ -1,5 +1,5 @@
 #include "widget.h"
-#include "Sender.h"
+#include <ClientApp/ClientApp.h>
 
 #include <QtWidgets>
 
@@ -23,6 +23,7 @@ Widget::Widget(QWidget *parent)
     QLineEdit* pcurrEdit = new QLineEdit;
     mPriceEdit = new QLineEdit;
 
+    mLotEdit->setText(QString::number(DEFAULT_LOT));
     mLotEdit->setMaximumWidth(40);
     pcurrEdit->setMaximumWidth(80);
     mPriceEdit->setMaximumWidth(60);
@@ -84,7 +85,7 @@ Widget::Widget(QWidget *parent)
     pmainGrid->setVerticalSpacing(15);
     pmainGrid->setMargin(15);
 
-    setLayout(pmainGrid);    
+    setLayout(pmainGrid);
     setFixedSize(sizeHint());
 
 
@@ -102,7 +103,7 @@ Widget::Widget(QWidget *parent)
     mClient = new Client(SETTINGS_FILE_NAME);
 
 
-    emit prefresh->clicked();
+//    emit prefresh->clicked();
 //    RefreshButtonClicked();
 }
 

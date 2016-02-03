@@ -14,13 +14,17 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         widget.cpp \
-    Sender.cpp
+    ../ClientApp/ClientApp.cpp
 
 HEADERS  += widget.h \
-    Sender.h
+    ../ClientApp/ClientApp.h
 
 CONFIG += c++14
 
 LIBS += -L/usr/local/lib/ -lquickfix
 
 QMAKE_CXX = g++-4.9
+
+INCLUDEPATH += $$PWD/..
+
+QMAKE_PRE_LINK  = ln -s $$PWD/../ClientApp/res res
