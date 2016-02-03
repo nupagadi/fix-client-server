@@ -1,4 +1,4 @@
-#include "Sender.h"
+#include "ClientApp.h"
 
 #include <string>
 #include <quickfix/FixFields.h>
