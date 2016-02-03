@@ -3,6 +3,9 @@ CONFIG += console c++14
 CONFIG -= app_bundle
 CONFIG -= qt
 
+HEADERS += \
+    ClientApp.h
+
 SOURCES += main.cpp \
     ClientApp.cpp
 
@@ -13,9 +16,6 @@ LIBS += -L/usr/local/lib/ -lquickfix
 
 QMAKE_CXX = g++-4.9
 
-HEADERS += \
-    ClientApp.h
-
 #symlink to access /res in build directory
-QMAKE_PRE_LINK  = ln -s $$PWD/res res
+QMAKE_PRE_LINK  = ln -sf $$PWD/res res
 

@@ -27,4 +27,4 @@ QMAKE_CXX = g++-4.9
 
 INCLUDEPATH += $$PWD/..
 
-QMAKE_PRE_LINK  = ln -s $$PWD/../ClientApp/res res
+QMAKE_PRE_LINK  = ln -sf $$PWD/../ClientApp/res res
