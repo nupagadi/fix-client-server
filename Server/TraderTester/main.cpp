@@ -6,6 +6,14 @@
 #define private public
 #include "../Trader.h"
 
+BOOST_AUTO_TEST_CASE(conveter_test)
+{
+    BOOST_REQUIRE_NO_THROW(Trader::Convert('1'));
+    BOOST_REQUIRE_NO_THROW(Trader::Convert('2'));
+    BOOST_REQUIRE_THROW(Trader::Convert(2), Trader::BadConvertionException);
+
+    BOOST_CHECK(Trader::Convert('1') == Trader::Order::Side::buy);
+}
 
 BOOST_AUTO_TEST_CASE(hollow_inition_test1)
 {
