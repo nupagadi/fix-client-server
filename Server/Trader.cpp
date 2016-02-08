@@ -52,6 +52,7 @@ Trader& Trader::operator<<(const FIX42::NewOrderSingle& order)
     order.get( side );
     order.get( ordType );
     order.get( orderQty );
+    // when NewOrderSingle comes, it's not executed yet, so there is no price
 //    order.get( price );
 
     mOpenedOrders.emplace_back(
