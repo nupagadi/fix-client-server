@@ -19,7 +19,7 @@ Trader::Trader(const std::vector<std::string> &ini_strings)
     std::istringstream stream(ini_strings[0]);
     stream >> mId;
     stream >> mBalance;
-    if(!stream.eof()) throw InitionException();
+    if(!stream.eof() || stream.fail()) throw InitionException();
 
     mOpenedOrders.reserve(ini_strings.size()-1);
     for(size_t i = 1; i < ini_strings.size(); ++i)
@@ -33,7 +33,7 @@ Trader::Trader(const std::vector<std::string> &ini_strings)
         order.side = static_cast<Order::Side>(en);
         stream >> order.lot;
         stream >> order.price;
-        if(!stream.eof()) throw InitionException();
+        if(!stream.eof() || stream.fail()) throw InitionException();
         mOpenedOrders.push_back(std::move(order));
     }
 }
