@@ -5,6 +5,10 @@
 #include <vector>
 #include <algorithm>
 
+#include <quickfix/Message.h>
+#include <quickfix/fix42/Message.h>
+#include "quickfix/fix42/NewOrderSingle.h"
+
 #include "Order.h"
 
 class Trader
@@ -13,22 +17,34 @@ class Trader
     {
         enum Side { buy, sell };
 
-        std::string id;
+        unsigned long long id;
         std::string symbol;
         Side side;
         unsigned short lot;
         unsigned long long price;
     };
 
+    static Order::Side Convert(char ch);
+    static unsigned long long GetOrderId()
+    {
+        static unsigned long long i = 0;
+        return ++i;
+    }
+
 public:
-    Trader(const std::vector<std::string>& ini_strings){}
+    Trader(const std::vector<std::string>& ini_strings);
 //    Trader(const std_string_type& id, long long balance)
 //        : mId(id), mBalance(balance)
 //    {}
 
+    class InitionException {};
+    class BadConvertionException {};
+
     Trader() = delete;
     Trader(const Trader&) = delete;
     Trader& operator=(const Trader&) = delete;
+
+    Trader& operator<<(const FIX42::NewOrderSingle& order);
 
 private:
 //    Trader& operator+=(const std::string& order_id)

@@ -17,5 +17,5 @@ LIBS += -L/usr/local/lib/ -lquickfix
 QMAKE_CXX = g++-4.9
 
 #symlink to access /res in build directory
-QMAKE_PRE_LINK  = ln -sf $$PWD/res res
+QMAKE_PRE_LINK  = ln -sfn $$PWD/res res
 
