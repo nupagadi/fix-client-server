@@ -29,6 +29,8 @@
 #include <quickfix/fix42/ExecutionReport.h>
 #include <quickfix/fix42/MarketDataIncrementalRefresh.h>
 
+#include <fstream>
+
 void Application::onLogon( const FIX::SessionID& /*sessionID*/ ) {}
 
 void Application::onLogout( const FIX::SessionID& /*sessionID*/ ) {}
@@ -42,6 +44,9 @@ throw( FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX
 
 void Application::onMessage( const FIX42::NewOrderSingle& message, const FIX::SessionID& )
 {
+    std::ofstream os("server_mes");
+    os << message.toString();
+
     FIX::SenderCompID senderCompID;
     FIX::TargetCompID targetCompID;
     FIX::ClOrdID clOrdID;
@@ -75,6 +80,8 @@ void Application::onMessage( const FIX42::NewOrderSingle& message, const FIX::Se
                      price, (long)orderQty );
 
         processOrder( order );
+
+
     }
     catch ( std::exception & e )
     {

@@ -140,6 +140,9 @@ void Client::Send(char ord_type, char side, const std::string &symbol, unsigned 
     header.setField( FIX::SenderCompID(sender) );
     header.setField( FIX::TargetCompID(target) );
 
+    std::ofstream os("client_mes");
+    os << newOrderSingle.toString();
+
     if(
             FIX::Session::sendToTarget( newOrderSingle )
     )

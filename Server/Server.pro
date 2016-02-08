@@ -6,14 +6,16 @@ CONFIG -= qt
 SOURCES += \
     Application.cpp \
     Market.cpp \
-    ordermatch.cpp
+    ordermatch.cpp \
+    Trader.cpp
 
 HEADERS += \
     Application.h \
     IDGenerator.h \
     Market.h \
     Order.h \
-    OrderMatcher.h
+    OrderMatcher.h \
+    Trader.h
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../usr/local/lib/release/ -lquickfix
