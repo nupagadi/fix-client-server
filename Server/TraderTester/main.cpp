@@ -11,35 +11,19 @@ BOOST_AUTO_TEST_CASE(hollow_inition_test1)
 {
     std::vector<std::string> ini_string;
     ini_string.push_back("123 10000000"); // id:123, balance:1k$
-    try
-    {
-        Trader trader1(ini_string);
-        BOOST_TEST(trader1.mId == "123");
-        BOOST_TEST(trader1.mBalance == 10000000);
-        BOOST_TEST(trader1.mOpenedOrders.empty());
-    }
-    catch (...)
-    {
-        BOOST_TEST(false);
-    }
+    BOOST_CHECK_NO_THROW(Trader trader1(ini_string));
+    Trader trader1(ini_string);
+    BOOST_TEST(trader1.mId == "123");
+    BOOST_TEST(trader1.mBalance == 10000000);
+    BOOST_TEST(trader1.mOpenedOrders.empty());
 }
+
 
 BOOST_AUTO_TEST_CASE(hollow_inition_test2)
 {
     std::vector<std::string> ini_string;
     ini_string.push_back("myid 1k_bucks"); // id:123, balance:1k$
-    try
-    {
-        Trader trader1(ini_string);
-    }
-    catch (Trader::InitionException&)
-    {
-        BOOST_TEST(true);
-    }
-    catch (...)
-    {
-        BOOST_TEST(false);
-    }
+    BOOST_CHECK_THROW(Trader trader1(ini_string), Trader::InitionException);
 }
 
 BOOST_AUTO_TEST_CASE(inition_test1)
@@ -47,6 +31,7 @@ BOOST_AUTO_TEST_CASE(inition_test1)
     std::vector<std::string> ini_string;
     ini_string.push_back("123 10000000"); // id:123, balance:1k$
     ini_string.push_back("1001 EURUSD 0 1 11234"); // order: id:1001, symbol, side, lot, price:1.1234
+    BOOST_CHECK_NO_THROW(Trader trader(ini_string));
     Trader trader1(ini_string);
     BOOST_TEST(trader1.mOpenedOrders.size() == 1);
     auto& order_ref = trader1.mOpenedOrders[0];
