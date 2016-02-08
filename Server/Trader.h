@@ -13,6 +13,8 @@
 
 class Trader
 {
+public:
+
     struct Order
     {
         enum Side { buy, sell };
@@ -25,13 +27,7 @@ class Trader
     };
 
     static Order::Side Convert(char ch);
-    static unsigned long long GetOrderId()
-    {
-        static unsigned long long i = 0;
-        return ++i;
-    }
 
-public:
     Trader(const std::vector<std::string>& ini_strings);
 //    Trader(const std_string_type& id, long long balance)
 //        : mId(id), mBalance(balance)
@@ -47,6 +43,11 @@ public:
     Trader& operator<<(const FIX42::NewOrderSingle& order);
 
 private:
+    static unsigned long long GetOrderId()
+    {
+        static unsigned long long i = 0;
+        return ++i;
+    }
 //    Trader& operator+=(const std::string& order_id)
 //    {
 //        if(std::find(mOpenedOrders.begin(), mOpenedOrders.end(), order_id) == mOpenedOrders.end())
