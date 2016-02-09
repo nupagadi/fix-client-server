@@ -114,7 +114,43 @@ BOOST_AUTO_TEST_CASE(trader_singleton_inition)
     BOOST_CHECK(instance);
     BOOST_CHECK(instance->mInstance.empty());
     TraderSingleton* instance2 = TraderSingleton::Instance();
-    BOOST_CHECK(instance != instance2);
+    BOOST_CHECK_EQUAL(instance, instance2);
+}
+
+BOOST_AUTO_TEST_CASE(trader_singleton_gettraderfromDB_method)
+{
+    TraderSingleton* instance = TraderSingleton::Instance();
+    std::unique_ptr<Trader> trader_ptr;
+    BOOST_CHECK(trader_ptr = instance->TryGetTraderFromDB("124"));
+    BOOST_CHECK(trader_ptr->mId == "124");
+    BOOST_CHECK(trader_ptr->mBalance == 9990000);
+}
+
+BOOST_AUTO_TEST_CASE(trader_singleton_gettraderfromonline_method)
+{
+    TraderSingleton* instance = TraderSingleton::Instance();
+    BOOST_CHECK(!instance->TryGetTraderFromOnline("124"));
+}
+
+BOOST_AUTO_TEST_CASE(trader_singleton_gettrader_method)
+{
+    TraderSingleton* instance = TraderSingleton::Instance();
+    BOOST_CHECK_NO_THROW(Trader& trader = instance->GetTrader("124"));
+    BOOST_CHECK_NO_THROW(Trader& trader = instance->GetTrader("125"));
+    BOOST_CHECK_THROW(Trader& trader = instance->GetTrader("12"),
+                      TraderSingleton::TraderObtainingException);
+    BOOST_CHECK_THROW(Trader& trader = instance->GetTrader(""),
+                      TraderSingleton::TraderObtainingException);
+    instance->mInstance.clear();
+
+
+    BOOST_REQUIRE(instance->mInstance.empty());
+    Trader& trader = instance->GetTrader("124");
+    BOOST_REQUIRE(instance->mInstance.size() == 1);
+//    BOOST_CHECK_EQUAL(&trader, &instance->mInstance.find("124")->second);
+    Trader& trader2 = instance->GetTrader("124");
+    BOOST_REQUIRE(instance->mInstance.size() == 1);
+    BOOST_CHECK_EQUAL(&trader, &trader2);
 }
 
 

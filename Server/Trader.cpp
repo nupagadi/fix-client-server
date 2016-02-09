@@ -65,16 +65,31 @@ Trader& Trader::operator<<(const FIX42::NewOrderSingle& order)
 
 
 
-TraderSingleton::TraderSingleton()
-{
-    std::ifstream file("trader_table");
+//TraderSingleton::TraderSingleton()
+//{
+//    std::ifstream file("trader_table");
 
-    while(true)
+//    while(true)
+//    {
+//        std::string line;
+//        while(std::getline(file, line) && line != "##")
+//        {
+//        }
+//        break;
+//    }
+//}
+
+Trader &TraderSingleton::GetTrader(const std::string &id)
+{
+
+    if(Trader* trader_ptr = TryGetTraderFromOnline(id))
+        return *trader_ptr;
+
+    if(std::unique_ptr<Trader> trader_ptr = TryGetTraderFromDB(id))
     {
-        std::string line;
-        while(std::getline(file, line) && line != "##")
-        {
-        }
-        break;
+        mInstance.emplace(id, std::move(trader_ptr));
+        return *trader_ptr;
     }
+
+    throw TraderObtainingException();
 }

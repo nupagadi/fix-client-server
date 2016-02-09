@@ -57,6 +57,8 @@ private:
 
 class TraderSingleton
 {
+    static constexpr char TRADER_TABLE_FILENAME[] = "trader_table";
+
 public:
     static TraderSingleton* Instance()
     {
@@ -64,18 +66,33 @@ public:
         return &traders;
     }
 
-    Trader GetTrader(const std::string& id) { throw std::exception(); }
+    // throws:
+    // TraderSingleton::TraderObtainingException - no such a trader
+    // Trader::InitionException - probably DB is corrupted
+    Trader& GetTrader(const std::string& id);
+
+
+    class TraderObtainingException {};
+
+//    class TraderUptr
+//    {
+//    public:
+//        TraderUptr(const Trader& obj);
+//        operator Trader&() { return *mObj; }
+//        bool operator == (const std::unique_ptr<Trader>& rh) const;
+//    private:
+//        std::unique_ptr<Trader> mObj;
+//    };
 
 private:
-    TraderSingleton();
+    TraderSingleton() {}
 
     Trader* TryGetTraderFromOnline(const std::string& id) { return nullptr; }
 
-    Trader* TryGetTraderFromDB(const std::string& id) { return nullptr; }
+    std::unique_ptr<Trader> TryGetTraderFromDB(const std::string& id) { return nullptr; }
 
-    static constexpr char TRADER_TABLE_FILENAME[] = "trader_table";
 
-    std::map<std::string, Trader> mInstance;
+    std::map<std::string, std::unique_ptr<Trader>> mInstance;
 };
 
 #endif // TRADER_H
