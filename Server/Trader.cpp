@@ -1,5 +1,6 @@
 #include "Trader.h"
 
+#include <fstream>
 
 
 Trader::Order::Side Trader::Convert(char ch)
@@ -60,4 +61,20 @@ Trader& Trader::operator<<(const FIX42::NewOrderSingle& order)
     );
 
     return *this;
+}
+
+
+
+TraderSingleton::TraderSingleton()
+{
+    std::ifstream file("trader_table");
+
+    while(true)
+    {
+        std::string line;
+        while(std::getline(file, line) && line != "##")
+        {
+        }
+        break;
+    }
 }

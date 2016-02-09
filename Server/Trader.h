@@ -54,4 +54,28 @@ private:
     std::vector<Trader::Order> mOpenedOrders; // opened orders
 };
 
+
+class TraderSingleton
+{
+public:
+    static TraderSingleton* Instance()
+    {
+        static TraderSingleton traders;
+        return &traders;
+    }
+
+    Trader GetTrader(const std::string& id) { throw std::exception(); }
+
+private:
+    TraderSingleton();
+
+    Trader* TryGetTraderFromOnline(const std::string& id) { return nullptr; }
+
+    Trader* TryGetTraderFromDB(const std::string& id) { return nullptr; }
+
+    static constexpr char TRADER_TABLE_FILENAME[] = "trader_table";
+
+    std::map<std::string, Trader> mInstance;
+};
+
 #endif // TRADER_H

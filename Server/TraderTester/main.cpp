@@ -104,3 +104,17 @@ BOOST_AUTO_TEST_CASE(order_add_test)
 }
 
 
+// TraderSingleton tests
+// TraderSingleton tests
+// TraderSingleton tests
+
+BOOST_AUTO_TEST_CASE(trader_singleton_inition)
+{
+    TraderSingleton* instance = TraderSingleton::Instance();
+    BOOST_CHECK(instance);
+    BOOST_CHECK(instance->mInstance.empty());
+    TraderSingleton* instance2 = TraderSingleton::Instance();
+    BOOST_CHECK(instance != instance2);
+}
+
+

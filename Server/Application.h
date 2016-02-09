@@ -93,7 +93,7 @@ class Application
   IDGenerator m_generator;
 
 public:
-  const OrderMatcher& orderMatcher() { return m_orderMatcher; }
+  const OrderMatcher& orderMatcher() const { return m_orderMatcher; }
 };
 
 #endif
