@@ -64,21 +64,6 @@ Trader& Trader::operator<<(const FIX42::NewOrderSingle& order)
 }
 
 
-
-//TraderSingleton::TraderSingleton()
-//{
-//    std::ifstream file("trader_table");
-
-//    while(true)
-//    {
-//        std::string line;
-//        while(std::getline(file, line) && line != "##")
-//        {
-//        }
-//        break;
-//    }
-//}
-
 Trader& TraderSingleton::GetTrader(const std::string &id)
 {
     auto trader_it = mInstance.find(id);
