@@ -250,7 +250,7 @@ void Application::processOrder( const Order& order )
         while ( orders.size() )
         {
             fillOrder( orders.front() );
-            ( *TraderSingleton::Instance() ) << orders.front();
+            TraderSingleton::Instance()->GetTrader(orders.front().getOwner()) << orders.front();
             orders.pop();
         }
     }

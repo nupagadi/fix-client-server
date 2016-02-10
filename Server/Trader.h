@@ -7,13 +7,6 @@
 #include <memory>
 #include <map>
 
-//#include "Order.h"
-
-// predeclaration
-namespace FIX42
-{
-    class NewOrderSingle;
-}
 class Order;
 
 constexpr unsigned long PRICE_COMMA = 10000;
@@ -47,7 +40,7 @@ public:
     Trader& operator=(const Trader&) = delete;
 
     // add an executed order
-    Trader& operator<<(const FIX42::NewOrderSingle& order);
+    Trader& operator<<(const ::Order& order);
     // remove executed order
     Trader& operator>>(unsigned long long order_id);
 
@@ -80,7 +73,7 @@ public:
     // Trader::InitionException - probably DB is corrupted
     Trader& GetTrader(const std::string& id);
 
-    TraderSingleton& operator<<(const Order& order);
+//    TraderSingleton& operator<<(const Order& order);
 
 
     class TraderObtainingException {};

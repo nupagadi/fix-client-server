@@ -77,32 +77,32 @@ BOOST_AUTO_TEST_CASE(inition_test2)
     BOOST_CHECK_THROW(Trader trader(ini_string), Trader::InitionException);
 }
 
-BOOST_AUTO_TEST_CASE(order_add_test)
-{
-    std::ifstream order1_file("res/order1");
-    BOOST_TEST(order1_file);
-    std::string order_str;
-    order1_file >> order_str;
-    BOOST_TEST(!order_str.empty());
-    FIX42::NewOrderSingle order1;
-    order1.setString(order_str);
+//BOOST_AUTO_TEST_CASE(order_add_test)
+//{
+//    std::ifstream order1_file("res/order1");
+//    BOOST_TEST(order1_file);
+//    std::string order_str;
+//    order1_file >> order_str;
+//    BOOST_TEST(!order_str.empty());
+//    FIX42::NewOrderSingle order1;
+//    order1.setString(order_str);
 
-    std::vector<std::string> ini_string;
-    ini_string.push_back("123 10000000"); // id:123, balance:1k$
+//    std::vector<std::string> ini_string;
+//    ini_string.push_back("123 10000000"); // id:123, balance:1k$
 
-    Trader trader1(ini_string);
-    trader1 << order1;
-    BOOST_TEST(trader1.mId == "123");
-    BOOST_TEST(trader1.mBalance == 10000000);
-    BOOST_TEST(trader1.mOpenedOrders.size() == 1);
-    auto& order_ref = trader1.mOpenedOrders[0];
-    BOOST_TEST(order_ref.id == 1);
-    BOOST_TEST(order_ref.symbol == "EURUSD");
-    BOOST_TEST(order_ref.side == Trader::Order::Side::sell);
-    BOOST_TEST(order_ref.lot == 1);
-//    BOOST_TEST(order_ref.price == );
+//    Trader trader1(ini_string);
+//    trader1 << order1;
+//    BOOST_TEST(trader1.mId == "123");
+//    BOOST_TEST(trader1.mBalance == 10000000);
+//    BOOST_TEST(trader1.mOpenedOrders.size() == 1);
+//    auto& order_ref = trader1.mOpenedOrders[0];
+//    BOOST_TEST(order_ref.id == 1);
+//    BOOST_TEST(order_ref.symbol == "EURUSD");
+//    BOOST_TEST(order_ref.side == Trader::Order::Side::sell);
+//    BOOST_TEST(order_ref.lot == 1);
+////    BOOST_TEST(order_ref.price == );
 
-}
+//}
 
 
 // TraderSingleton tests
@@ -175,7 +175,7 @@ BOOST_AUTO_TEST_CASE(add_order_to_trader_test)
     order.execute(price3, lot/2);
     order.execute(price2, lot/2);
 
-    ( *TraderSingleton::Instance() ) << order;
+    BOOST_CHECK_NO_THROW(instance->GetTrader(order.getOwner()) << order);
 
     BOOST_CHECK_NO_THROW(instance->GetTrader(trader_name));
     auto& trader2 = instance->GetTrader(trader_name);
