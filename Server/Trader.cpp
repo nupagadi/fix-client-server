@@ -2,6 +2,10 @@
 
 #include <fstream>
 
+#include <quickfix/Message.h>
+#include <quickfix/fix42/Message.h>
+#include "quickfix/fix42/NewOrderSingle.h"
+
 
 Trader::Order::Side Trader::Convert(char ch)
 {
@@ -77,6 +81,11 @@ Trader& TraderSingleton::GetTrader(const std::string &id)
     }
 
     throw TraderObtainingException();
+}
+
+TraderSingleton& TraderSingleton::operator<<(const Order& order)
+{
+    return *this;
 }
 
 std::unique_ptr<Trader> TraderSingleton::TryGetTraderFromDB(const std::string &id)

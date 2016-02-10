@@ -2,6 +2,7 @@
 #include <boost/test/included/unit_test.hpp>
 
 #include "quickfix/fix42/NewOrderSingle.h"
+#include "../Order.h"
 
 #define private public
 #include "../Trader.h"
@@ -152,6 +153,40 @@ BOOST_AUTO_TEST_CASE(trader_singleton_gettrader_method)
     Trader& trader2 = instance->GetTrader("124");
     BOOST_REQUIRE(instance->mInstance.size() == 1);
     BOOST_CHECK_EQUAL(&trader, &trader2);
+}
+
+
+BOOST_AUTO_TEST_CASE(add_order_to_trader_test)
+{
+    unsigned price = 14321*PRICE_ACCURACY, price2 = 14322*PRICE_ACCURACY,
+            price3 = 14333*PRICE_ACCURACY, avg_price = (price3+price2)/2,
+            lot = 100;  // 1.4321 1.4322 1.433 1.00
+    std::string trader_name = "senderCompID";
+
+    auto instance = TraderSingleton::Instance();
+    BOOST_REQUIRE_NO_THROW(instance->GetTrader(trader_name));
+    auto& trader = instance->GetTrader(trader_name);
+    auto trader_balance = trader.mBalance;
+    auto trader_orders_num = trader.mOpenedOrders.size();
+    instance->mInstance.clear();
+
+    Order order( "order_id12", "EURUSD", trader_name, "targetCompID",
+                 Order::buy, Order::limit, price, lot);
+    order.execute(price3, lot/2);
+    order.execute(price2, lot/2);
+
+    ( *TraderSingleton::Instance() ) << order;
+
+    BOOST_CHECK_NO_THROW(instance->GetTrader(trader_name));
+    auto& trader2 = instance->GetTrader(trader_name);
+    BOOST_CHECK(trader2.mId == trader_name);
+    BOOST_CHECK(trader2.mOpenedOrders.size() == trader_orders_num+1);
+    BOOST_CHECK(trader2.mOpenedOrders.back().lot == 100);
+    BOOST_CHECK(trader2.mOpenedOrders.back().price == avg_price);
+    BOOST_CHECK(trader2.mOpenedOrders.back().symbol == "EURUSD");
+    BOOST_CHECK(trader2.mOpenedOrders.back().side == Order::buy);
+
+
 }
 
 

@@ -4,12 +4,21 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <memory>
+#include <map>
 
-#include <quickfix/Message.h>
-#include <quickfix/fix42/Message.h>
-#include "quickfix/fix42/NewOrderSingle.h"
+//#include "Order.h"
 
-#include "Order.h"
+// predeclaration
+namespace FIX42
+{
+    class NewOrderSingle;
+}
+class Order;
+
+constexpr unsigned long PRICE_COMMA = 10000;
+constexpr unsigned long long PRICE_ACCURACY = 1000*1000*1000;
+constexpr unsigned long BUCKS_PER_LOT = 100*1000;
 
 class Trader
 {
@@ -22,8 +31,8 @@ public:
         unsigned long long id;
         std::string symbol;
         Side side;
-        unsigned short lot;
-        unsigned long long price;
+        unsigned short lot;     // 655.35 - max 655 lots
+        unsigned long long price;   // 1844674.4073709551615
     };
 
     static Order::Side Convert(char ch);
@@ -71,8 +80,13 @@ public:
     // Trader::InitionException - probably DB is corrupted
     Trader& GetTrader(const std::string& id);
 
+    TraderSingleton& operator<<(const Order& order);
+
 
     class TraderObtainingException {};
+
+    TraderSingleton(const TraderSingleton&) = delete;
+    TraderSingleton& operator=(const TraderSingleton&) = delete;
 
 private:
     TraderSingleton() {}
