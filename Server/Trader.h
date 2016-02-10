@@ -54,4 +54,45 @@ private:
     std::vector<Trader::Order> mOpenedOrders; // opened orders
 };
 
+
+constexpr char TRADER_TABLE_FILENAME[] = "res/trader_table";
+class TraderSingleton
+{
+
+public:
+    static TraderSingleton* Instance()
+    {
+        static TraderSingleton traders;
+        return &traders;
+    }
+
+    // throws:
+    // TraderSingleton::TraderObtainingException - no such a trader
+    // Trader::InitionException - probably DB is corrupted
+    Trader& GetTrader(const std::string& id);
+
+
+    class TraderObtainingException {};
+
+//    class TraderUptr
+//    {
+//    public:
+//        TraderUptr(const Trader& obj);
+//        operator Trader&() { return *mObj; }
+//        bool operator == (const std::unique_ptr<Trader>& rh) const;
+//    private:
+//        std::unique_ptr<Trader> mObj;
+//    };
+
+private:
+    TraderSingleton() {}
+
+//    std::unique_ptr<Trader>& TryGetTraderFromOnline(const std::string& id);
+
+    std::unique_ptr<Trader> TryGetTraderFromDB(const std::string& id);
+
+
+    std::map<std::string, std::unique_ptr<Trader>> mInstance;
+};
+
 #endif // TRADER_H

@@ -1,5 +1,6 @@
 #include "Trader.h"
 
+#include <fstream>
 
 
 Trader::Order::Side Trader::Convert(char ch)
@@ -60,4 +61,67 @@ Trader& Trader::operator<<(const FIX42::NewOrderSingle& order)
     );
 
     return *this;
+}
+
+
+
+//TraderSingleton::TraderSingleton()
+//{
+//    std::ifstream file("trader_table");
+
+//    while(true)
+//    {
+//        std::string line;
+//        while(std::getline(file, line) && line != "##")
+//        {
+//        }
+//        break;
+//    }
+//}
+
+Trader& TraderSingleton::GetTrader(const std::string &id)
+{
+    auto trader_it = mInstance.find(id);
+    if(trader_it !=  mInstance.end())
+        return *trader_it->second;
+
+    if(std::unique_ptr<Trader> trader_ptr = TryGetTraderFromDB(id))
+    {
+        auto pair = mInstance.emplace(id, std::move(trader_ptr));
+        return *pair.first->second;
+    }
+
+    throw TraderObtainingException();
+}
+
+std::unique_ptr<Trader> TraderSingleton::TryGetTraderFromDB(const std::string &id)
+{
+    std::ifstream db(TRADER_TABLE_FILENAME);
+    if(!db) return nullptr;
+
+    std::string beginning, line;
+    std::vector<std::string> ini_strings;
+
+    auto task = [&]()
+    {
+        if(!beginning.empty())
+        {
+            line = beginning + ' ' + line;
+            beginning.clear();
+        }
+        ini_strings.push_back( line );
+    };
+    auto skip = [](){};
+    std::function<void()> func_ptr = skip;
+
+    while(db)
+    {
+        if(db >> beginning && beginning == id)
+            func_ptr = task;
+        while(std::getline(db, line) && line != "##")
+            func_ptr();
+        if(!ini_strings.empty())
+            return std::make_unique<Trader>(ini_strings);
+    }
+    return nullptr;
 }
