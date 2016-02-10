@@ -96,8 +96,8 @@ std::unique_ptr<Trader> TraderSingleton::TryGetTraderFromDB(const std::string &i
         }
         ini_strings.push_back( line );
     };
-    auto skip = [](){};
-    std::function<void()> func_ptr = skip;
+
+    std::function<void()> func_ptr = [](){};
 
     while(db)
     {

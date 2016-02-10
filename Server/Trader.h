@@ -74,16 +74,6 @@ public:
 
     class TraderObtainingException {};
 
-//    class TraderUptr
-//    {
-//    public:
-//        TraderUptr(const Trader& obj);
-//        operator Trader&() { return *mObj; }
-//        bool operator == (const std::unique_ptr<Trader>& rh) const;
-//    private:
-//        std::unique_ptr<Trader> mObj;
-//    };
-
 private:
     TraderSingleton() {}
 
