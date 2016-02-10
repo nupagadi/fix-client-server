@@ -24,6 +24,7 @@
 #endif
 
 #include "Application.h"
+#include "Trader.h"
 #include <quickfix/Session.h>
 
 #include <quickfix/fix42/ExecutionReport.h>
@@ -249,6 +250,7 @@ void Application::processOrder( const Order& order )
         while ( orders.size() )
         {
             fillOrder( orders.front() );
+            TraderSingleton::Instance()->GetTrader(orders.front().getOwner()) << orders.front();
             orders.pop();
         }
     }

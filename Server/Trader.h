@@ -4,12 +4,14 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <memory>
+#include <map>
 
-#include <quickfix/Message.h>
-#include <quickfix/fix42/Message.h>
-#include "quickfix/fix42/NewOrderSingle.h"
+class Order;
 
-#include "Order.h"
+constexpr unsigned long PRICE_COMMA = 10000;
+constexpr unsigned long long PRICE_ACCURACY = 1000*1000*1000;
+constexpr unsigned long BUCKS_PER_LOT = 100*1000;
 
 class Trader
 {
@@ -22,8 +24,8 @@ public:
         unsigned long long id;
         std::string symbol;
         Side side;
-        unsigned short lot;
-        unsigned long long price;
+        unsigned short lot;     // 655.35 - max 655 lots
+        unsigned long long price;   // 1844674.4073709551615
     };
 
     static Order::Side Convert(char ch);
@@ -38,7 +40,7 @@ public:
     Trader& operator=(const Trader&) = delete;
 
     // add an executed order
-    Trader& operator<<(const FIX42::NewOrderSingle& order);
+    Trader& operator<<(const ::Order& order);
     // remove executed order
     Trader& operator>>(unsigned long long order_id);
 
@@ -71,18 +73,13 @@ public:
     // Trader::InitionException - probably DB is corrupted
     Trader& GetTrader(const std::string& id);
 
+//    TraderSingleton& operator<<(const Order& order);
+
 
     class TraderObtainingException {};
 
-//    class TraderUptr
-//    {
-//    public:
-//        TraderUptr(const Trader& obj);
-//        operator Trader&() { return *mObj; }
-//        bool operator == (const std::unique_ptr<Trader>& rh) const;
-//    private:
-//        std::unique_ptr<Trader> mObj;
-//    };
+    TraderSingleton(const TraderSingleton&) = delete;
+    TraderSingleton& operator=(const TraderSingleton&) = delete;
 
 private:
     TraderSingleton() {}

@@ -1,6 +1,11 @@
 #include "Trader.h"
+#include "Order.h"
 
 #include <fstream>
+
+//#include <quickfix/Message.h>
+//#include <quickfix/fix42/Message.h>
+//#include "quickfix/fix42/NewOrderSingle.h"
 
 
 Trader::Order::Side Trader::Convert(char ch)
@@ -39,45 +44,17 @@ Trader::Trader(const std::vector<std::string> &ini_strings)
     }
 }
 
-Trader& Trader::operator<<(const FIX42::NewOrderSingle& order)
+Trader& Trader::operator<<(const ::Order& order)
 {
-    FIX::SenderCompID senderCompID;
-    FIX::Symbol symbol;
-    FIX::Side side;
-    FIX::OrdType ordType;
-    FIX::OrderQty orderQty;
-    FIX::Price price(0);
-
-    order.getHeader().get( senderCompID );
-    order.get( symbol );
-    order.get( side );
-    order.get( ordType );
-    order.get( orderQty );
-    // when NewOrderSingle comes, it's not executed yet, so there is no price
-//    order.get( price );
-
     mOpenedOrders.emplace_back(
-        Trader::Order{ GetOrderId(), symbol, Convert(side), orderQty, price }
+        Trader::Order{ GetOrderId(), order.getSymbol(),
+                       static_cast<Trader::Order::Side>(order.getSide()),
+                       order.getExecutedQuantity(), order.getAvgExecutedPrice() }
     );
 
     return *this;
 }
 
-
-
-//TraderSingleton::TraderSingleton()
-//{
-//    std::ifstream file("trader_table");
-
-//    while(true)
-//    {
-//        std::string line;
-//        while(std::getline(file, line) && line != "##")
-//        {
-//        }
-//        break;
-//    }
-//}
 
 Trader& TraderSingleton::GetTrader(const std::string &id)
 {
@@ -93,6 +70,12 @@ Trader& TraderSingleton::GetTrader(const std::string &id)
 
     throw TraderObtainingException();
 }
+
+//TraderSingleton& TraderSingleton::operator<<(const Order& order)
+//{
+//    GetTrader(order.getOwner()) << order;
+//    return *this;
+//}
 
 std::unique_ptr<Trader> TraderSingleton::TryGetTraderFromDB(const std::string &id)
 {
@@ -111,8 +94,8 @@ std::unique_ptr<Trader> TraderSingleton::TryGetTraderFromDB(const std::string &i
         }
         ini_strings.push_back( line );
     };
-    auto skip = [](){};
-    std::function<void()> func_ptr = skip;
+
+    std::function<void()> func_ptr = [](){};
 
     while(db)
     {
