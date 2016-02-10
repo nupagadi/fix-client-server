@@ -55,9 +55,9 @@ private:
 };
 
 
+constexpr char TRADER_TABLE_FILENAME[] = "res/trader_table";
 class TraderSingleton
 {
-    static constexpr char TRADER_TABLE_FILENAME[] = "trader_table";
 
 public:
     static TraderSingleton* Instance()
@@ -87,9 +87,9 @@ public:
 private:
     TraderSingleton() {}
 
-    Trader* TryGetTraderFromOnline(const std::string& id) { return nullptr; }
+//    std::unique_ptr<Trader>& TryGetTraderFromOnline(const std::string& id);
 
-    std::unique_ptr<Trader> TryGetTraderFromDB(const std::string& id) { return nullptr; }
+    std::unique_ptr<Trader> TryGetTraderFromDB(const std::string& id);
 
 
     std::map<std::string, std::unique_ptr<Trader>> mInstance;

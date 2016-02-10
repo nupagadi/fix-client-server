@@ -124,13 +124,14 @@ BOOST_AUTO_TEST_CASE(trader_singleton_gettraderfromDB_method)
     BOOST_CHECK(trader_ptr = instance->TryGetTraderFromDB("124"));
     BOOST_CHECK(trader_ptr->mId == "124");
     BOOST_CHECK(trader_ptr->mBalance == 9990000);
+    instance->mInstance.clear();
 }
 
-BOOST_AUTO_TEST_CASE(trader_singleton_gettraderfromonline_method)
-{
-    TraderSingleton* instance = TraderSingleton::Instance();
-    BOOST_CHECK(!instance->TryGetTraderFromOnline("124"));
-}
+//BOOST_AUTO_TEST_CASE(trader_singleton_gettraderfromonline_method)
+//{
+//    TraderSingleton* instance = TraderSingleton::Instance();
+//    BOOST_CHECK(!instance->TryGetTraderFromOnline("124"));
+//}
 
 BOOST_AUTO_TEST_CASE(trader_singleton_gettrader_method)
 {
@@ -147,7 +148,7 @@ BOOST_AUTO_TEST_CASE(trader_singleton_gettrader_method)
     BOOST_REQUIRE(instance->mInstance.empty());
     Trader& trader = instance->GetTrader("124");
     BOOST_REQUIRE(instance->mInstance.size() == 1);
-//    BOOST_CHECK_EQUAL(&trader, &instance->mInstance.find("124")->second);
+    BOOST_CHECK_EQUAL(&trader, instance->mInstance.find("124")->second.get());
     Trader& trader2 = instance->GetTrader("124");
     BOOST_REQUIRE(instance->mInstance.size() == 1);
     BOOST_CHECK_EQUAL(&trader, &trader2);
