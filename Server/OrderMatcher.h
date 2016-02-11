@@ -84,6 +84,11 @@ public:
       std::cout << i->first << std::endl;
   }
 
+  void GetTops(const std::string& symbol, unsigned long &bid, unsigned long &offer)
+  {
+
+  }
+
 private:
   Markets m_markets;
 };

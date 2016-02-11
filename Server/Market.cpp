@@ -24,6 +24,9 @@
 #endif
 
 #include "Market.h"
+
+#include "Trader.h"
+
 #include <iostream>
 #include <algorithm>
 
@@ -71,7 +74,16 @@ void Market::GetTops(BidOrders::iterator& iBid, AskOrders::iterator& iAsk)
             {
                 return el.second.getType() != Order::market;
             }
-        );
+                );
+}
+
+void Market::GetTops(unsigned long& bid, unsigned long& ask)
+{
+    BidOrders::iterator iBid;    AskOrders::iterator iAsk;
+    GetTops(iBid, iAsk);
+    double b = iBid->second.getPrice(), a = iAsk->second.getPrice();
+    bid = static_cast<int>(b * PRICE_ACCURACY * PRICE_COMMA);
+    ask = static_cast<int>(a * PRICE_ACCURACY * PRICE_COMMA);
 }
 
 bool Market::match( std::queue < Order > & orders )

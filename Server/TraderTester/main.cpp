@@ -185,8 +185,31 @@ BOOST_AUTO_TEST_CASE(add_order_to_trader_test)
     BOOST_CHECK(trader2.mOpenedOrders.back().price == avg_price);
     BOOST_CHECK(trader2.mOpenedOrders.back().symbol == "EURUSD");
     BOOST_CHECK(trader2.mOpenedOrders.back().side == Order::buy);
-
-
 }
+
+
+BOOST_AUTO_TEST_CASE(is_enough_equity_test)
+{
+    unsigned price = 14321*PRICE_ACCURACY, lot = 100;  // 1.4321 1.4322 1.433 1.00
+    std::string trader_name = "senderCompID";
+
+    auto instance = TraderSingleton::Instance();
+
+    Order order( "order_id12", "EURUSD", trader_name, "targetCompID",
+                 Order::buy, Order::limit, price, lot);
+
+    BOOST_CHECK_NO_THROW(instance->GetTrader(order.getOwner()) << order);
+
+    auto& trader2 = instance->GetTrader(trader_name);
+//    BOOST_CHECK(trader2.mId == trader_name);
+//    BOOST_CHECK(trader2.mOpenedOrders.size() == trader_orders_num+1);
+//    BOOST_CHECK(trader2.mOpenedOrders.back().lot == 100);
+//    BOOST_CHECK(trader2.mOpenedOrders.back().price == avg_price);
+//    BOOST_CHECK(trader2.mOpenedOrders.back().symbol == "EURUSD");
+//    BOOST_CHECK(trader2.mOpenedOrders.back().side == Order::buy);
+}
+
+
+
 
 

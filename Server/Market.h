@@ -44,6 +44,7 @@ public:
 
     // Get top bid and price; only one of <iBid> and <iAsk> is Order::market
     void GetTops(BidOrders::iterator& iBid, AskOrders::iterator& iAsk);
+    void GetTops(unsigned long& bid, unsigned long& ask);
 
 private:
     // assume only one of <bid> and <ask> is Order::market

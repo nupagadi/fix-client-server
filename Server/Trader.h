@@ -9,9 +9,26 @@
 
 class Order;
 
+constexpr unsigned MIN_EQUITY_RATIO = 5; // EQUITY / 5
 constexpr unsigned long PRICE_COMMA = 10000;
-constexpr unsigned long long PRICE_ACCURACY = 1000*1000*1000;
-constexpr unsigned long BUCKS_PER_LOT = 100*1000;
+constexpr unsigned PRICE_ACCURACY = 1000;
+constexpr unsigned LOT_ACCURACY = 100;
+constexpr unsigned long UNITS_PER_LOT = 100*1000;
+constexpr unsigned long UNITS_IN_TOTAL(unsigned short lot)
+{ return UNITS_PER_LOT/LOT_ACCURACY * lot; }
+// 1000$ == 1000 00 00
+constexpr unsigned long cost_impl(unsigned short lot, unsigned long long price)
+{
+    return UNITS_IN_TOTAL(lot)/(UNITS_PER_LOT/LOT_ACCURACY) * price;
+}
+
+constexpr unsigned long COST_IN_TOTAL(unsigned short lot, unsigned long long price)
+//{ return price * lot; }
+{
+    return (PRICE_ACCURACY <= UNITS_PER_LOT/LOT_ACCURACY) ?
+        cost_impl(lot, price) *  (UNITS_PER_LOT/LOT_ACCURACY / PRICE_ACCURACY)
+      : cost_impl(lot, price) / (PRICE_ACCURACY / (UNITS_PER_LOT/LOT_ACCURACY));
+}
 
 class Trader
 {
@@ -31,6 +48,8 @@ public:
     static Order::Side Convert(char ch);
 
     Trader(const std::vector<std::string>& ini_strings);
+
+    bool IsEnoughEquity(unsigned short lot, unsigned long long price);
 
     class InitionException {};
     class BadConvertionException {};
@@ -75,6 +94,7 @@ public:
 
 //    TraderSingleton& operator<<(const Order& order);
 
+    bool IsEnoughEquity(const Order& order);
 
     class TraderObtainingException {};
 

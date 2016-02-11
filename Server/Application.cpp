@@ -82,7 +82,6 @@ void Application::onMessage( const FIX42::NewOrderSingle& message, const FIX::Se
 
         processOrder( order );
 
-
     }
     catch ( std::exception & e )
     {

@@ -44,6 +44,14 @@ Trader::Trader(const std::vector<std::string> &ini_strings)
     }
 }
 
+bool Trader::IsEnoughEquity(unsigned short lot, unsigned long long price)
+{
+    unsigned long long sum = 0;
+    for(const auto& el : mOpenedOrders)
+        sum += COST_IN_TOTAL(el.lot, el.price);
+    return mBalance - sum > mBalance / MIN_EQUITY_RATIO;
+}
+
 Trader& Trader::operator<<(const ::Order& order)
 {
     mOpenedOrders.emplace_back(
@@ -69,6 +77,18 @@ Trader& TraderSingleton::GetTrader(const std::string &id)
     }
 
     throw TraderObtainingException();
+}
+
+bool TraderSingleton::IsEnoughEquity(const Order &order)
+{
+    try
+    {
+        auto& trader = GetTrader(order.getOwner());
+    }
+    catch(...)
+    {
+
+    }
 }
 
 //TraderSingleton& TraderSingleton::operator<<(const Order& order)
